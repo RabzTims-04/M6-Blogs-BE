@@ -1,0 +1,35 @@
+{
+  "name": "M6-Blogs-BE",
+  "version": "1.0.0",
+  "description": "Blogs backend using MongoDB",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -e js -r dotenv/config ./src/server.js",
+    "start": "node ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RabzTims-04/M6-Blogs-BE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RabzTims-04/M6-Blogs-BE/issues"
+  },
+  "homepage": "https://github.com/RabzTims-04/M6-Blogs-BE#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-list-endpoints": "^5.0.0",
+    "express-validator": "^6.12.0",
+    "http-errors": "^1.8.0",
+    "mongoose": "^5.13.2"
+  },
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "nodemon": "^2.0.9"
+  }
+}
