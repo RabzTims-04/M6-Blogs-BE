@@ -18,6 +18,8 @@ blogsRouter.get("/", async (req, res, next) => {
   }
 });
 
+/* *******************get single blog*************************** */
+
 blogsRouter.get("/:blogId", async (req, res, next) => {
   try {
     const blogId = req.params.blogId;
@@ -36,6 +38,8 @@ blogsRouter.get("/:blogId", async (req, res, next) => {
     );
   }
 });
+
+/* *******************post a blog*************************** */
 
 blogsRouter.post("/", async (req, res, next) => {
   try {
@@ -57,6 +61,8 @@ blogsRouter.post("/", async (req, res, next) => {
     }
   }
 });
+
+/* *******************edit blog*************************** */
 
 blogsRouter.put("/:blogId", async (req, res, next) => {
   try {
@@ -80,6 +86,8 @@ blogsRouter.put("/:blogId", async (req, res, next) => {
     );
   }
 });
+
+/* *******************delete blog*************************** */
 
 blogsRouter.delete("/:blogId", async (req, res, next) => {
   try {
@@ -115,6 +123,8 @@ blogsRouter.get("/:blogId/comments", async (req, res, next) => {
   }
 });
 
+/* *******************get single comment*************************** */
+
 blogsRouter.get("/:blogId/comments/:commentId", async (req, res, next) => {
   try {
     const blog = await blogModel.findById(req.params.blogId, {
@@ -137,6 +147,8 @@ blogsRouter.get("/:blogId/comments/:commentId", async (req, res, next) => {
     next(createError(500, "Error while fetching a single comment"));
   }
 });
+
+/* *******************post comment*************************** */
 
 blogsRouter.post("/:blogId/comments", async (req, res, next) => {
   try {
@@ -168,6 +180,8 @@ blogsRouter.post("/:blogId/comments", async (req, res, next) => {
   }
 });
 
+/* *******************edit comment*************************** */
+
 blogsRouter.put("/:blogId/comments/:commentId", async (req, res, next) => {
   try {
     /* const blogcomment = await blogModel.findById(req.params.blogId, {
@@ -184,6 +198,9 @@ blogsRouter.put("/:blogId/comments/:commentId", async (req, res, next) => {
       updatedAt: new Date()
     };
     console.log(updatedComment); */
+
+    //either can be done like above or below
+
     const body = {};
     for (let key in req.body) {
       body[`comments.$.${key}`] = req.body[key];
@@ -214,6 +231,8 @@ blogsRouter.put("/:blogId/comments/:commentId", async (req, res, next) => {
     next(createError(500, "Error while editing a comment"));
   }
 });
+
+/* *******************delete comment*************************** */
 
 blogsRouter.delete("/:blogId/comments/:commentId", async (req, res, next) => {
   try {
