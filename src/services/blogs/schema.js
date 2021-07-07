@@ -54,7 +54,15 @@ const blogSchema = new Schema(
             type: String,
             required:true,
             description: "should be a string"
-        }
+        },
+        comments:[
+            {
+                name:String,
+                comment:String,
+                createdAt: Date,
+                updatedAt: Date
+            }
+        ]
     },
     {
         timestamps: true
