@@ -26,7 +26,8 @@
     "express-list-endpoints": "^5.0.0",
     "express-validator": "^6.12.0",
     "http-errors": "^1.8.0",
-    "mongoose": "^5.13.2"
+    "mongoose": "^5.13.2",
+    "striptags": "^3.2.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0",
