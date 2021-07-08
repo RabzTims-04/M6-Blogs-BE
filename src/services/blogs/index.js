@@ -3,6 +3,13 @@ import createError from "http-errors";
 import blogModel from "./schema.js";
 import striptags from "striptags";
 import q2m from "query-to-mongo";
+import axios from "axios";
+import { pipeline } from "stream";
+import { v2 as cloudinary } from "cloudinary"
+import { CloudinaryStorage } from "multer-storage-cloudinary"
+import multer from "multer";
+import { generatePDFReadableStream, stream2Buffer } from "../../lib/pdf/index.js";
+import { email } from "../../lib/email.js";
 
 const blogsRouter = express.Router();
 
@@ -27,7 +34,7 @@ blogsRouter.get("/", async (req, res, next) => {
 blogsRouter.get("/:blogId", async (req, res, next) => {
   try {
     const blogId = req.params.blogId;
-    const blog = await blogModel.findById(blogId);
+    const blog = await blogModel.findAuthorOfBlog(blogId);
     if (blog) {
       res.send(blog);
     } else {
@@ -43,6 +50,15 @@ blogsRouter.get("/:blogId", async (req, res, next) => {
   }
 });
 
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary,
+  params:{
+    folder:"BlogCovers"
+  }
+})
+
+const uploadOnCloudinary = multer({ storage: cloudinaryStorage}).single("blogCover")
+
 /* *******************post a blog*************************** */
 
 blogsRouter.post("/", async (req, res, next) => {
@@ -55,6 +71,34 @@ blogsRouter.post("/", async (req, res, next) => {
     req.body.readTime.unit = readTimeUnit;
     const newBlog = new blogModel(req.body);
     const { _id } = await newBlog.save();
+
+    console.log(newBlog);
+
+    const response = await axios.get(newBlog.cover,{
+      responseType: 'arraybuffer'
+    })
+    const mediaPath = newBlog.cover.split('/')
+    const filename = mediaPath[mediaPath.length-1]
+    const [ id, extension ] = filename.split('.')
+    const base64 = Buffer.from(response.data).toString('base64')
+    const base64Image = `data:image/${extension};base64,${base64}`
+    const source = generatePDFReadableStream(newBlog, base64Image)
+    const destination = res
+    pipeline(source, destination, err => {
+      if(err){
+        next(err)
+      }
+    })
+
+    const PdfAsBuffer = await stream2Buffer(source)
+    const base64Pdf = PdfAsBuffer.toString("base64")
+
+    const blogId = newBlog._id;
+    const blog = await blogModel.findAuthorOfBlog(blogId)
+    const authorEmail = blog.authors[0].email
+    await email(authorEmail, newBlog, base64Pdf)
+    
+
     res.status(201).send({ _id });
   } catch (error) {
     console.log(error);

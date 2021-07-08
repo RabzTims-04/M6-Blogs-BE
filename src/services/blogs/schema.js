@@ -83,6 +83,12 @@ blogSchema.static("findAuthorsOfBlog", async function (query) {
     .populate("authors")
 
     return { total, blogs }
+
+})
+
+blogSchema.static("findAuthorOfBlog", async function (id) {
+        const blog = await this.findById(id).populate("authors")
+        return blog
 })
 
 export default model("Blog", blogSchema)
