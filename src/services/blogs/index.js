@@ -2,6 +2,7 @@ import express from "express";
 import createError from "http-errors";
 import blogModel from "./schema.js";
 import striptags from "striptags";
+import q2m from "query-to-mongo";
 
 const blogsRouter = express.Router();
 
@@ -9,8 +10,11 @@ const blogsRouter = express.Router();
 
 blogsRouter.get("/", async (req, res, next) => {
   try {
-    const blogs = await blogModel.find();
-    res.send(blogs);
+    const query = q2m(req.query)
+    console.log(query);
+
+    const { total, blogs } = await blogModel.findAuthorsOfBlog(query);
+    res.send({links: query.links("/blogs", total), total, blogs})
   } catch (error) {
     next(
       createError(500, "An error occurred while creating getting blogs list")
