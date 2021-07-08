@@ -50,14 +50,14 @@ blogsRouter.get("/:blogId", async (req, res, next) => {
   }
 });
 
-const cloudinaryStorage = new CloudinaryStorage({
+/* const cloudinaryStorage = new CloudinaryStorage({
   cloudinary,
   params:{
     folder:"BlogCovers"
   }
 })
 
-const uploadOnCloudinary = multer({ storage: cloudinaryStorage}).single("blogCover")
+const uploadOnCloudinary = multer({ storage: cloudinaryStorage}).single("blogCover") */
 
 /* *******************post a blog*************************** */
 
