@@ -48,20 +48,27 @@ authorsRouter.post("/", async (req, res, next) => {
 
 /* ***************EDIT author details****************** */
 
-authorsRouter.put("/", async (req, res, next) => {
+/* authorsRouter.put("/", async (req, res, next) => {
     try {
         
     } catch (error) {
         next(createError(500, "Error in updating author details"))
     }
 })
-
+ */
 
 /* ****************DELETE author details***************** */
 
-authorsRouter.delete("/", async (req, res, next) => {
+authorsRouter.delete("/:id", async (req, res, next) => {
     try {
-        
+        const id = req.params.id
+        const author = await AuthorModel.findByIdAndDelete(id)
+        if(author){
+            res.status(204).send()
+        }
+        else{
+            next(createError(404, `author with id: ${id} not found`))
+        }
     } catch (error) {
         next(createError(500, "Error in deleting author details"))
     }
