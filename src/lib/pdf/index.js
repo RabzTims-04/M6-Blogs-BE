@@ -1,4 +1,5 @@
 import PdfPrinter from "pdfmake"
+import striptags from "striptags"
 
 export const generatePDFReadableStream = (obj,img) => {
     
@@ -14,6 +15,9 @@ export const generatePDFReadableStream = (obj,img) => {
         },
         MidnightInOctober:{
             normal:"src/lib/fonts/Midnight in October - TTF.ttf"
+        },
+        Chigoda:{
+            normal:"src/lib/fonts/Chigoda.ttf"
         }
     }
 
@@ -45,10 +49,10 @@ export const generatePDFReadableStream = (obj,img) => {
                 },
             
                  {
-                   text:obj.content,
+                   text:striptags(obj.content),
                    alignment:'center',
                    fontSize: 20,
-                   font:"hello", 
+                   font:"Chigoda", 
                  }            
         ]
     }

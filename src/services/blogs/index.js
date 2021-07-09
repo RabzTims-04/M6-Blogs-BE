@@ -59,6 +59,42 @@ blogsRouter.get("/:blogId", async (req, res, next) => {
 
 const uploadOnCloudinary = multer({ storage: cloudinaryStorage}).single("blogCover") */
 
+/* ********************PDF download************************* */
+
+blogsRouter.get("/:blogId/pdf", async (req, res, next) => {
+  try {
+    const blogId = req.params.blogId;
+    const blog = await blogModel.findAuthorOfBlog(blogId);
+    if (blog) {
+      const response = await axios.get(blog.cover,{
+        responseType: 'arraybuffer'
+      })
+      const mediaPath = blog.cover.split('/')
+      const filename = mediaPath[mediaPath.length-1]
+      const [ id, extension ] = filename.split('.')
+      const base64 = Buffer.from(response.data).toString('base64')
+      const base64Image = `data:image/${extension};base64,${base64}`
+      const source = generatePDFReadableStream(blog, base64Image)
+      const destination = res
+      pipeline(source, destination, err => {
+        if(err){
+          next(err)
+        }
+      })
+    } else {
+      next(createError(404, `blog with id: ${blogId} not found`));
+    }
+  } catch (error) {
+    next(
+      createError(
+        500,
+        `An error occurred while finding blog with id: ${req.params.blogId}`
+      )
+    );
+  }
+});
+
+
 /* *******************post a blog*************************** */
 
 blogsRouter.post("/", async (req, res, next) => {
