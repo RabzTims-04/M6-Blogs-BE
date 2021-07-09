@@ -27,18 +27,26 @@ export const generatePDFReadableStream = (obj,img) => {
         content:[        
              
                 {
-                    text:obj.title,
+                    text:`Title: ${obj.title}`,
+                    alignment:'center',
                     fontSize: 24,
                     font:"MidnightInOctober",
                     margin:[0,10,0,10]
                 },
                 
                 {
-                    text:`${obj.readTime.value} ${obj.readTime.unit}`,
+                    text:`${obj.readTime.value} ${obj.readTime.unit} Read`,
                     fontSize: 24,
                     font:"hello",
                     alignment:"right",
-                    absolutePosition: {x: 0, y:55}
+                    absolutePosition: {x: 0, y:105}
+                },
+
+                {
+                    text:`Written By: ${obj.authors[0].name} ${obj.authors[0].surname}`,
+                    fontSize: 24,
+                    font:"hello",
+                    margin:[0,10,0,10]
                 },
 
                 {

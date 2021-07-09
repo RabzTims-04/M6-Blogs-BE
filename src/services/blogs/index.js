@@ -110,6 +110,9 @@ blogsRouter.post("/", async (req, res, next) => {
 
     console.log(newBlog);
 
+    const blogId = newBlog._id;
+    const blog = await blogModel.findAuthorOfBlog(blogId)
+
     const response = await axios.get(newBlog.cover,{
       responseType: 'arraybuffer'
     })
@@ -118,7 +121,7 @@ blogsRouter.post("/", async (req, res, next) => {
     const [ id, extension ] = filename.split('.')
     const base64 = Buffer.from(response.data).toString('base64')
     const base64Image = `data:image/${extension};base64,${base64}`
-    const source = generatePDFReadableStream(newBlog, base64Image)
+    const source = generatePDFReadableStream(blog, base64Image)
     const destination = res
     pipeline(source, destination, err => {
       if(err){
@@ -129,11 +132,8 @@ blogsRouter.post("/", async (req, res, next) => {
     const PdfAsBuffer = await stream2Buffer(source)
     const base64Pdf = PdfAsBuffer.toString("base64")
 
-    const blogId = newBlog._id;
-    const blog = await blogModel.findAuthorOfBlog(blogId)
     const authorEmail = blog.authors[0].email
-    await email(authorEmail, newBlog, base64Pdf)
-    
+    await email(authorEmail, newBlog, base64Pdf)    
 
     res.status(201).send({ _id });
   } catch (error) {
